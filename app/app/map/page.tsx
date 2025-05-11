@@ -14,16 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getScoreColor } from "@/lib/utils";
-import {
-  Heart,
-  X,
-
-  MapPin,
-  Calendar,
-  Building,
-  Activity,
-
-} from "lucide-react";
+import { Heart, X, MapPin, Calendar, Building, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -41,12 +32,6 @@ const Map = dynamic(() => import("@/components/MapWithEntreprises"), {
     <Skeleton className="w-full h-[calc(100vh-64px)] rounded-lg" />
   ),
 });
-
-interface EntrepriseMarker {
-  id: string;
-  position: [number, number];
-  entreprise: Entreprise;
-}
 
 export default function MapPage() {
   const { entreprises, loading } = useEntreprises();
@@ -80,17 +65,17 @@ export default function MapPage() {
 
   // Check if screen is mobile
   const [isMobileView, setIsMobileView] = useState(false);
-  
+
   useEffect(() => {
     const checkScreenSize = () => {
       setIsMobileView(window.innerWidth < 768);
     };
-    
+
     checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    
+    window.addEventListener("resize", checkScreenSize);
+
     return () => {
-      window.removeEventListener('resize', checkScreenSize);
+      window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
 
@@ -141,7 +126,7 @@ export default function MapPage() {
 
         {/* Sidebar for entreprise details */}
         <div
-          className={`fixed md:absolute top-0 right-0 h-full ${isMobileView ? 'w-full' : 'w-[350px]'} bg-white z-[1000] shadow-xl transition-all duration-300 ${
+          className={`fixed md:absolute top-0 right-0 h-full ${isMobileView ? "w-full" : "w-[350px]"} bg-white z-[1000] shadow-xl transition-all duration-300 ${
             sidebarOpen ? "translate-x-0" : "translate-x-full"
           } overflow-hidden`}
         >
@@ -418,9 +403,9 @@ export default function MapPage() {
                   : 0}
                 % géolocalisées
               </Badge>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="h-6 text-xs ml-1"
                 onClick={handleShowGlobalView}
               >
@@ -429,14 +414,20 @@ export default function MapPage() {
             </div>
           )}
         </div>
-        
+
         {/* OpenStreetMap attribution */}
         <div className="absolute bottom-4 right-4 z-[1000] bg-white/90 py-1 px-2 rounded-md shadow-sm text-xs">
           <small className="text-gray-500">
-            &copy; <a href="https://www.openstreetmap.org/copyright" className="hover:underline">OpenStreetMap</a>
+            &copy;{" "}
+            <a
+              href="https://www.openstreetmap.org/copyright"
+              className="hover:underline"
+            >
+              OpenStreetMap
+            </a>
           </small>
         </div>
-        
+
         {/* Close sidebar button on mobile */}
         {sidebarOpen && isMobileView && (
           <Button

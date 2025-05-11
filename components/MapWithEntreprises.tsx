@@ -439,7 +439,8 @@ export default function MapWithEntreprises({
               icon={getIconForScore(marker.entreprise.score)}
               eventHandlers={{
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                click: () => onMarkerClickFn && onMarkerClickFn(marker.entreprise),
+                click: () =>
+                  onMarkerClickFn && onMarkerClickFn(marker.entreprise),
               }}
             >
               <Popup>
