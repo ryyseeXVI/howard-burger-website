@@ -12,14 +12,14 @@ export default function RessourcesPage() {
       url: "https://www.bodacc.fr",
     },
     {
-      title: "Repreneurs",
+      title: "Les Repreneurs",
       description: "Plateforme de mise en relation avec des repreneurs",
       url: "https://www.repreneurs.com",
     },
     {
-      title: "Mandataires judiciaires",
-      description: "Annuaire officiel des mandataires liquidateurs",
-      url: "https://www.greffe-tc.fr",
+      title: "Les mandataires.com",
+      description: "Annuaire de mandataires liquidateurs",
+      url: "https://lesmandataires.com/",
     },
     {
       title: "Infogreffe",
@@ -32,7 +32,7 @@ export default function RessourcesPage() {
     {
       title: "INSEE - Codes NAF",
       description: "Nomenclature d'activités française complète",
-      url: "https://www.insee.fr/fr/metadonnees/naf",
+      url: "https://www.insee.fr/fr/information/2406147",
     },
     {
       title: "Legifrance",

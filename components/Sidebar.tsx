@@ -116,15 +116,6 @@ export function Sidebar() {
             <BookText className="w-5 h-5 mr-3" />
             Ressources
           </Link>
-
-          <Link
-            href="/app/help"
-            className="flex items-center p-3 rounded-lg hover:bg-gray-100 transition text-gray-700"
-            onClick={() => isMobile && setIsOpen(false)}
-          >
-            <HelpCircle className="w-5 h-5 mr-3" />
-            Help
-          </Link>
         </nav>
 
         {/* Section utilisateur */}

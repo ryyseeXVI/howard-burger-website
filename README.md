@@ -130,6 +130,8 @@ La principale entité est `Entreprise` avec les propriétés :
 - `latitude/longitude`: Coordonnées géographiques
 - `favori`: Statut de favori
 
+(Le schéma de la base de données est dans le fichier db.sql)
+
 ## 🧩 Extension du projet
 
 ### Ajout de fonctionnalités
@@ -143,7 +145,3 @@ La principale entité est `Entreprise` avec les propriétés :
 1. Créer un nouveau dossier dans `/app/app/`
 2. Ajouter un fichier `page.tsx`
 3. Utiliser le Context pour accéder aux données
-
-## 📜 Licence
-
-Ce projet est sous licence MIT.

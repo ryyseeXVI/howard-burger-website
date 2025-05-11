@@ -14,7 +14,15 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getScoreColor } from "@/lib/utils";
-import { Heart, X, MapPin, Calendar, Building, Activity } from "lucide-react";
+import {
+  Heart,
+  X,
+  MapPin,
+  Calendar,
+  Building,
+  Activity,
+  Filter,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -25,6 +33,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { truncateText } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Map = dynamic(() => import("@/components/MapWithEntreprises"), {
   ssr: false,
@@ -40,6 +55,20 @@ export default function MapPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mapInitialized, setMapInitialized] = useState(false);
   const [showGlobalView, setShowGlobalView] = useState(false);
+  const [enafFilter, setEnafFilter] = useState<string>("");
+  const [showEnafFilter, setShowEnafFilter] = useState(false);
+
+  // Extract unique ENAF codes from activite_principale
+  const enafCodes = useMemo(() => {
+    if (!entreprises) return [];
+    const codes = new Set<string>();
+    entreprises.forEach((e) => {
+      if (e.activite_principale) {
+        codes.add(e.activite_principale);
+      }
+    });
+    return Array.from(codes).sort();
+  }, [entreprises]);
 
   // Convert entreprises with coordinates to map markers
   const entrepriseMarkers = useMemo(() => {
@@ -51,7 +80,8 @@ export default function MapPage() {
           e.latitude &&
           e.longitude &&
           !isNaN(parseFloat(e.latitude)) &&
-          !isNaN(parseFloat(e.longitude)),
+          !isNaN(parseFloat(e.longitude)) &&
+          (enafFilter === "" || e.activite_principale === enafFilter),
       )
       .map((e) => ({
         id: e.id.toString(),
@@ -61,7 +91,7 @@ export default function MapPage() {
         ],
         entreprise: e,
       }));
-  }, [entreprises]);
+  }, [entreprises, enafFilter]);
 
   // Check if screen is mobile
   const [isMobileView, setIsMobileView] = useState(false);
@@ -411,9 +441,40 @@ export default function MapPage() {
               >
                 Détails
               </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 text-xs"
+                onClick={() => setShowEnafFilter(!showEnafFilter)}
+              >
+                <Filter className="h-3 w-3 mr-1" />
+                Filtre ENAF
+              </Button>
             </div>
           )}
         </div>
+
+        {/* ENAF Filter select */}
+        {showEnafFilter && (
+          <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-[1000] bg-white/95 px-4 py-2 rounded-lg shadow-md text-sm backdrop-blur-sm w-64">
+            <Select
+              value={enafFilter}
+              onValueChange={(value) => setEnafFilter(value)}
+            >
+              <SelectTrigger className="w-full border-none focus:ring-0 focus:ring-offset-0">
+                <SelectValue placeholder="Filtrer par code ENAF" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Tous les codes ENAF</SelectItem>
+                {enafCodes.map((code) => (
+                  <SelectItem key={code} value={code}>
+                    {code}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {/* OpenStreetMap attribution */}
         <div className="absolute bottom-4 right-4 z-[1000] bg-white/90 py-1 px-2 rounded-md shadow-sm text-xs">

@@ -243,14 +243,13 @@ function SearchBar({
 // Composant principal de la carte
 export default function MapWithEntreprises({
   markers = [],
-  onMarkerClickAction: onMarkerClickFn,
+  onMarkerClick,
   loading = false,
   onInitialized,
   attributionControl = false,
 }: {
   markers: EntrepriseMarker[];
-  // eslint-disable-next-line react/no-unused-prop-types
-  onMarkerClickAction?: (entreprise: Entreprise | { id: string }) => void;
+  onMarkerClick?: (entreprise: Entreprise | { id: string }) => void;
   loading?: boolean;
   onInitialized?: () => void;
   attributionControl?: boolean;
@@ -439,8 +438,7 @@ export default function MapWithEntreprises({
               icon={getIconForScore(marker.entreprise.score)}
               eventHandlers={{
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                click: () =>
-                  onMarkerClickFn && onMarkerClickFn(marker.entreprise),
+                click: () => onMarkerClick && onMarkerClick(marker.entreprise),
               }}
             >
               <Popup>
