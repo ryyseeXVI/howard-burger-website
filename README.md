@@ -1,36 +1,149 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Howard Burger Website
 
-## Getting Started
+Application web pour visualiser et gérer les entreprises en liquidation.
 
-First, run the development server:
+## 🚀 Fonctionnalités
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Listing des entreprises** : Visualisation et filtrage des entreprises en liquidation
+- **Carte interactive** : Affichage géographique des entreprises avec marqueurs colorés
+- **Gestion des favoris** : Marquer des entreprises comme favorites
+- **Filtres avancés** : Filtrage par département, score, etc.
+- **Mises à jour en temps réel** : Synchronisation automatique des données via Supabase
+
+## 🔧 Technologies
+
+- [Next.js](https://nextjs.org/) - Framework React
+- [Supabase](https://supabase.io/) - Backend et base de données
+- [Leaflet](https://leafletjs.com/) - Cartes interactives
+- [Framer Motion](https://www.framer.com/motion/) - Animations
+- [shadcn/ui](https://ui.shadcn.com/) - Composants UI
+
+## 📂 Structure du projet
+
+```
+howard-burger-website/
+├── app/ - Routes et layouts Next.js
+│   ├── app/ - Application principale
+│   │   ├── layout.tsx - Layout principal avec Context Provider
+│   │   ├── listing/ - Page de liste des entreprises
+│   │   └── map/ - Page de carte interactive
+├── components/ - Composants réutilisables
+│   ├── Map.tsx - Base de la carte Leaflet
+│   ├── MapWithEntreprises.tsx - Carte avec données d'entreprises
+│   └── EntrepriseModal.tsx - Modal de détails d'entreprise
+├── lib/ - Utilitaires et types
+│   ├── types.ts - Types TypeScript
+│   └── utils.ts - Fonctions utilitaires
+├── public/ - Assets statiques
+└── utils/ - Utilitaires spécifiques
+    └── supabase/ - Configuration Supabase
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🧠 Mécanismes clés
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Gestion d'état global
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Le projet utilise React Context API pour partager les données d'entreprises entre les composants :
 
-## Learn More
+```tsx
+// Dans app/layout.tsx
+const EntreprisesContext = createContext<{
+  entreprises: Entreprise[];
+  loading: boolean;
+  updateEntreprise: (updated: Entreprise) => void;
+  removeEntreprise: (id: string) => void;
+} | null>(null);
 
-To learn more about Next.js, take a look at the following resources:
+// Utilisation dans les composants
+const { entreprises, loading } = useEntreprises();
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Abonnements en temps réel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Les données sont synchronisées en temps réel avec Supabase :
 
-## Deploy on Vercel
+```tsx
+useEffect(() => {
+  const channel = supabase
+    .channel("realtime-entreprises")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "entreprise" },
+      (payload) => {
+        // Mise à jour de l'état en fonction des changements
+      }
+    )
+    .subscribe();
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, []);
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Carte interactive
+
+La carte utilise Leaflet et affiche les entreprises géolocalisées avec des marqueurs colorés selon leur score. Un panneau latéral s'ouvre au clic sur un marqueur pour afficher les détails de l'entreprise.
+
+## 🚦 Installation et démarrage
+
+1. Cloner le dépôt
+   ```
+   git clone https://github.com/username/howard-burger-website.git
+   cd howard-burger-website
+   ```
+
+2. Installer les dépendances
+   ```
+   npm install
+   ```
+
+3. Configurer les variables d'environnement
+   ```
+   cp .env.example .env.local
+   ```
+   Remplir avec vos clés Supabase
+
+4. Générer les marqueurs colorés (optionnel)
+   ```
+   npm install -g jimp
+   node scripts/generate-markers.js
+   ```
+
+5. Démarrer le serveur de développement
+   ```
+   npm run dev
+   ```
+
+6. Ouvrir [http://localhost:3000](http://localhost:3000)
+
+## 📊 Modèle de données
+
+La principale entité est `Entreprise` avec les propriétés :
+
+- `id`: Identifiant unique
+- `nom_complet`: Nom de l'entreprise
+- `social_ville`: Ville du siège social
+- `social_code_postal`: Code postal
+- `dateparution`: Date de parution de l'annonce
+- `score`: Score de l'entreprise (0-10)
+- `latitude/longitude`: Coordonnées géographiques
+- `favori`: Statut de favori
+
+## 🧩 Extension du projet
+
+### Ajout de fonctionnalités
+
+1. Créer un composant dans `/components`
+2. Ajouter la logique business
+3. Intégrer dans les pages existantes
+
+### Ajout de pages
+
+1. Créer un nouveau dossier dans `/app/app/`
+2. Ajouter un fichier `page.tsx`
+3. Utiliser le Context pour accéder aux données
+
+## 📜 Licence
+
+Ce projet est sous licence MIT.
